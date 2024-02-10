@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryMethod.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using ServicioApiCurso.Bll;
+using ServicioApiCurso.Helpers;
 using ServicioApiCurso.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,9 +25,23 @@ namespace ServicioApiCurso.Controllers
 
         // GET <UsersServiceController>/5
         [HttpGet("{id}")]
-        public UsersServiceModel Get(int id)
+        public dynamic Get(int id)
         {
-            return UserBll.GetUser(id);
+            ValidateRequest ValidateReq = new ValidateRequest();
+
+            if (!ValidateReq.ValidateIdUser(id))
+            {
+                return Message.IdNotValid;
+            }
+
+            UsersServiceModel UserModel = UserBll.GetUser(id);
+
+            if (UserModel == null)
+            {
+                return Message.IdNotFound;
+            }
+
+            return UserModel;
         }
 
         // POST api/<UsersServiceController>

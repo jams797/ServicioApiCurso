@@ -31,12 +31,18 @@ namespace ServicioApiCurso.Bll
         public List<UsersServiceModel> GetUsers()
         {
 
-            return ListUser;
+            return ListUser.Skip(1).ToList();
         }
 
-        public UsersServiceModel GetUser(int Id)
+        public UsersServiceModel? GetUser(int Id)
         {
-            return ListUser.Where(x => x.Id == Id).FirstOrDefault();
+            try
+            {
+                return ListUser.Where(x => x.Id == Id).First();
+            } catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
