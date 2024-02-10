@@ -1,4 +1,4 @@
-namespace ServicioApiCurso
+namespace ServicioApiCurso.Models
 {
     public class WeatherForecast
     {

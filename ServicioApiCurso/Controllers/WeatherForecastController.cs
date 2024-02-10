@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ServicioApiCurso.Models;
 using System;
 using System.Reflection;
 
@@ -24,13 +25,21 @@ namespace ServicioApiCurso.Controllers
         public IEnumerable<WeatherForecast> Get()
         {
             // UsuarioCreado //PascalCase
-            dynamic TimeNow = new DateTime(2024, 12, 1);
+            /*dynamic TimeNow = new DateTime(2024, 12, 1);
             DateTime TimeModif = TimeNow.AddMonths(-1);
             return Enumerable.Range(1, 10).Select((index) => FuncionPrueba(index))
+            .ToArray();*/
+            return Enumerable.Range(1, 10).Select((index) => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)],
+                Name = "Hola",
+            })
             .ToArray();
         }
 
-        public WeatherForecast FuncionPrueba(int index)
+        /*public WeatherForecast FuncionPrueba(int index)
         {
             return new WeatherForecast
             {
@@ -39,6 +48,6 @@ namespace ServicioApiCurso.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)],
                 Name = "Hola",
             };
-        }
+        }*/
     }
 }
