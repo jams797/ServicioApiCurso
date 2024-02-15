@@ -10,13 +10,14 @@ namespace LibraryMethod.Helpers
     {
         public bool ValidateIdUser(int Id)
         {
-            if( Id > 0)
+            /*if( Id > 0)
             {
                 return true;
             } else
             {
                 return false;
-            }
+            }*/
+            return (Id > 0);
         }
     }
 }

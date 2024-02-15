@@ -25,29 +25,45 @@ namespace ServicioApiCurso.Controllers
 
         // GET <UsersServiceController>/5
         [HttpGet("{id}")]
-        public dynamic Get(int id)
+        public IActionResult Get(int id)
         {
+            GenericResponse<UsersServiceModel?> GenResp = new Models.GenericResponse<UsersServiceModel?>();
             ValidateRequest ValidateReq = new ValidateRequest();
 
             if (!ValidateReq.ValidateIdUser(id))
             {
-                return Message.IdNotValid;
+                GenResp.statusCode = 500;
+                GenResp.message = Message.IdNotValid;
             }
-
-            UsersServiceModel UserModel = UserBll.GetUser(id);
-
-            if (UserModel == null)
+            else
             {
-                return Message.IdNotFound;
+
+                UsersServiceModel UserModel = UserBll.GetUser(id);
+
+                if (UserModel == null)
+                {
+                    GenResp.statusCode = 404;
+                    GenResp.message = Message.IdNotFound;
+                } else
+                {
+                    GenResp.statusCode = 200;
+                    GenResp.data = UserModel;
+                    GenResp.message = "";
+                }
             }
 
-            return UserModel;
+            return StatusCode(GenResp.statusCode, GenResp);
+
+            //return UserModel;
+            //return StatusCode(200, UserModel);
+            //return Ok(UserModel);
         }
 
         // POST api/<UsersServiceController>
         [HttpPost]
         public void Post([FromBody] string value)
         {
+            //return StatusCode(418, null);
         }
 
         // PUT api/<UsersServiceController>/5
