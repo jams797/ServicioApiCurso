@@ -70,8 +70,21 @@ namespace ServicioApiCurso.Controllers
 
         // PUT api/<UsersServiceController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] UserServiceModelReq model)
         {
+            GenericResponse<UsersServiceModel?> GenResp = new Models.GenericResponse<UsersServiceModel?>();
+            bool Updated = (new UsersBll()).UpdateUser(id, model);
+            if (Updated)
+            {
+                GenResp.statusCode = 200;
+                GenResp.message = "";
+            }
+            else
+            {
+                GenResp.statusCode = 200;
+                GenResp.message = "Error al actualizar";
+            }
+            return Ok(GenResp);
         }
 
         // DELETE api/<UsersServiceController>/5

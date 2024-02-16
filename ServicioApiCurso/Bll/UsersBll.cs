@@ -49,5 +49,24 @@ namespace ServicioApiCurso.Bll
         {
             ListUser.Add(model);
         }
+
+        public bool UpdateUser(int Id, UserServiceModelReq model)
+        {
+            int userFind = ListUser.FindIndex(x => x.Id == Id);
+            if(userFind >= 0)
+            {
+                UsersServiceModel UserModel = ListUser[userFind];
+                UserModel.Name = model.Name;
+                UserModel.LastName = model.LastName;
+                UserModel.Age = model.Age;
+
+                ListUser[userFind] = UserModel;
+
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
     }
 }
