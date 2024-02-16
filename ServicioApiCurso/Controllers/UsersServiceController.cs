@@ -61,9 +61,11 @@ namespace ServicioApiCurso.Controllers
 
         // POST api/<UsersServiceController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] UsersServiceModel model)
         {
-            //return StatusCode(418, null);
+            UsersBll UserB = new UsersBll();
+            UserB.CreateUser(model);
+            return StatusCode(200, model);
         }
 
         // PUT api/<UsersServiceController>/5

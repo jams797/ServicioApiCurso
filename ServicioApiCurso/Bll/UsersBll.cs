@@ -4,7 +4,7 @@ namespace ServicioApiCurso.Bll
 {
     public class UsersBll
     {
-        List<UsersServiceModel> ListUser = new List<UsersServiceModel>
+        static List<UsersServiceModel> ListUser = new List<UsersServiceModel>
         {
             new UsersServiceModel
             {
@@ -43,6 +43,11 @@ namespace ServicioApiCurso.Bll
             {
                 return null;
             }
+        }
+
+        public void CreateUser(UsersServiceModel model)
+        {
+            ListUser.Add(model);
         }
     }
 }
