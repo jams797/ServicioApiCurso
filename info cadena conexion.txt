@@ -1,0 +1,8 @@
+::Autentificacion con windows
+Persist Security Info=true;
+
+::Autentificacion con credenciales BD
+user id=sa;password=123456
+
+::Conexion a BD con certificado SSL
+TrustServerCertificate=true;Persist Security Info=true;

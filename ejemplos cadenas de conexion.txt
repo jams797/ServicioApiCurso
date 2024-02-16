@@ -1,0 +1,11 @@
+Scaffold-DbContext "Server=localhost;Database=pruebav2;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir ModelsDB
+
+
+Scaffold-DbContext "Server=localhost;Database=pruebav2;user id=sa;password=123456;TrustServerCertificate=true;Persist Security Info=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir ModelsDB
+
+
+
+Scaffold-DbContext "Server=VMT-JMORAN\SQLEXPRESS;Database=dbproduct;Trusted_Connection=True;TrustServerCertificate=true;Persist Security Info=true;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir DBModels
+
+
+Scaffold-DbContext "Server=localhost;Database=dbproduct;Trusted_Connection=True;TrustServerCertificate=true;Persist Security Info=true;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir DBModels
