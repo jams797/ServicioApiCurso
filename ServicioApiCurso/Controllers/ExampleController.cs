@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ServicioApiCurso.DBModels;
+using ServicioApiCurso.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,19 +11,39 @@ namespace ServicioApiCurso.Controllers
     [ApiController]
     public class ExampleController : ControllerBase
     {
+        private readonly DbproductContext _db;
+
+        public ExampleController(DbproductContext dbProductContext)
+        {
+            _db = dbProductContext;
+        }
+
+
+
         // GET: api/<ExampleController>
         [HttpGet]
-        public dynamic Get()
+        public async Task<dynamic> Get()
         {
-            var tmp = (new ConfigurationBuilder()).AddJsonFile("appsettings.json").Build().GetSection("BD");
-            return tmp.GetValue("name", "");
+            //var tmp = (new ConfigurationBuilder()).AddJsonFile("appsettings.json").Build().GetSection("rutas");
+            // return tmp.GetValue("deleteUser", "");
+            // return tmp["deleteUser"];
+            //return tmp.GetValue<int>("tmp");
+
+            return await _db.Categories.ToListAsync();
         }
 
         // GET api/<ExampleController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<GenericResponse<List<Product>>> Get(int id)
         {
-            return "value";
+            List<Product> ListProduct = await _db.Products.Where(k => k.CategoryId == id).ToListAsync();
+
+            GenericResponse<List<Product>> Resp = new GenericResponse<List<Product>>();
+            Resp.statusCode = 200;
+            Resp.message = "";
+            Resp.data = ListProduct;
+
+            return Resp;
         }
 
         // POST api/<ExampleController>

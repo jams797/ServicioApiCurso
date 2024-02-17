@@ -81,7 +81,7 @@ namespace ServicioApiCurso.Controllers
             }
             else
             {
-                GenResp.statusCode = 200;
+                GenResp.statusCode = 500;
                 GenResp.message = "Error al actualizar";
             }
             return Ok(GenResp);

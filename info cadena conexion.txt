@@ -1,5 +1,5 @@
 ::Autentificacion con windows
-Persist Security Info=true;
+Trusted_Connection=True;
 
 ::Autentificacion con credenciales BD
 user id=sa;password=123456
