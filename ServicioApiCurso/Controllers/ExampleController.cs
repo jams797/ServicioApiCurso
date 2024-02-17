@@ -36,7 +36,11 @@ namespace ServicioApiCurso.Controllers
         [HttpGet("{id}")]
         public async Task<GenericResponse<List<Product>>> Get(int id)
         {
-            List<Product> ListProduct = await _db.Products.Where(k => k.CategoryId == id).ToListAsync();
+            // List<Product> ListProduct = await _db.Products.Where(k => k.CategoryId == id).ToListAsync();
+
+            List<Product> ListProduct =  (from prod in _db.Products
+                                          where prod.CategoryId == id
+                                          select prod).Take(10).ToList();
 
             GenericResponse<List<Product>> Resp = new GenericResponse<List<Product>>();
             Resp.statusCode = 200;
