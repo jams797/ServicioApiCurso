@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ServicioApiCurso.DBModels;
 using ServicioApiCurso.Models;
+using ServicioApiCurso.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,7 +30,28 @@ namespace ServicioApiCurso.Controllers
             // return tmp["deleteUser"];
             //return tmp.GetValue<int>("tmp");
 
-            return await _db.Categories.ToListAsync();
+            //return await _db.Categories.ToListAsync();
+
+            var tmp = (from catg in _db.Categories
+             join prod in _db.Products on catg.CategoryId equals prod.CategoryId
+             select new
+             {
+                 catg,
+                 prod,
+             }).ToList();
+
+            List<ProductCategoryResp> ListProdCatg = [];
+
+            foreach(var item in tmp) {
+                ListProdCatg.Add(new ProductCategoryResp
+                {
+                    IdProduct = item.prod.ProductId,
+                    NameProduct = item.prod.Name,
+                    NameCategory = item.catg.Name,
+                });
+            }
+
+            return ListProdCatg;
         }
 
         // GET api/<ExampleController>/5
@@ -40,7 +62,7 @@ namespace ServicioApiCurso.Controllers
 
             List<Product> ListProduct =  (from prod in _db.Products
                                           where prod.CategoryId == id
-                                          select prod).Take(10).ToList();
+                                          select prod).ToList();
 
             GenericResponse<List<Product>> Resp = new GenericResponse<List<Product>>();
             Resp.statusCode = 200;
@@ -52,14 +74,18 @@ namespace ServicioApiCurso.Controllers
 
         // POST api/<ExampleController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Post([FromBody] InsertProductModelReq Model)
         {
+            ProductRepository ProductRepos = new ProductRepository();
+            return ProductRepos.InsertProduct(_db, Model);
         }
 
         // PUT api/<ExampleController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public bool Put(int id, [FromBody] InsertProductModelReq Model)
         {
+            ProductRepository ProductRepos = new ProductRepository();
+            return ProductRepos.UpdateProduct(_db, Model, id);
         }
 
         // DELETE api/<ExampleController>/5
