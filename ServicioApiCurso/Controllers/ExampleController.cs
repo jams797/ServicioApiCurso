@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryMethod.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServicioApiCurso.Bll;
 using ServicioApiCurso.DBModels;
+using ServicioApiCurso.Helpers;
 using ServicioApiCurso.Models;
 using ServicioApiCurso.Repository;
 
@@ -82,10 +85,33 @@ namespace ServicioApiCurso.Controllers
 
         // PUT api/<ExampleController>/5
         [HttpPut("{id}")]
-        public bool Put(int id, [FromBody] InsertProductModelReq Model)
+        public GenericResponse<bool?> Put(int id, [FromBody] InsertProductModelReq Model)
         {
-            ProductRepository ProductRepos = new ProductRepository();
-            return ProductRepos.UpdateProduct(_db, Model, id);
+            GenericResponse<bool?> GenResp = new Models.GenericResponse<bool?>();
+            ValidateRequest ValidateReq = new ValidateRequest();
+
+            if (!ValidateReq.ValidateIdUser(id))
+            {
+                GenResp.statusCode = 500;
+                GenResp.message = Message.IdNotValid;
+            } else
+            {
+                ProductBll ProductB = new ProductBll();
+                bool update = ProductB.UpdateProduct(_db, Model, id);
+                if (update)
+                {
+                    GenResp.statusCode = 200;
+                    GenResp.data = true;
+                    GenResp.message = "";
+                }
+                else
+                {
+                    GenResp.statusCode = 500;
+                    GenResp.data = false;
+                    GenResp.message = Message.ErrorUpdateProduct;
+                }
+            }
+            return GenResp;
         }
 
         // DELETE api/<ExampleController>/5

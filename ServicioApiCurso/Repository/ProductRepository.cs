@@ -25,7 +25,6 @@ namespace ServicioApiCurso.Repository
 
         public bool UpdateProduct(DbproductContext Context, InsertProductModelReq Model, int IdProduct)
         {
-            Context.Database.BeginTransaction();
             Product ProductFind = Context.Products.Where(x => x.ProductId == IdProduct).FirstOrDefault();
 
             if (ProductFind != null)
@@ -35,8 +34,6 @@ namespace ServicioApiCurso.Repository
                 ProductFind.Count = Model.Cant;
 
                 Context.SaveChanges();
-
-                Context.Database.CommitTransaction();
 
                 return true;
             } else
