@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ecomerce.Bll;
+using Ecomerce.DBModels;
+using Ecomerce.Models.InvoiceProcess;
+using Microsoft.AspNetCore.Mvc;
+using ServicioApiCurso.Models.General;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,6 +12,14 @@ namespace Ecomerce.Controllers
     [ApiController]
     public class InvoiceController : ControllerBase
     {
+
+        private readonly DbproductContext _db;
+
+        public InvoiceController(DbproductContext dbProductContext)
+        {
+            _db = dbProductContext;
+        }
+
         // GET: api/<InvoiceController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -24,8 +36,27 @@ namespace Ecomerce.Controllers
 
         // POST api/<InvoiceController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public GenericResponse<CreateInvoiceResponse> Post([FromBody] List<CreateInvoiceRequest> ReqModel)
         {
+            InvoiceBll InvoiceB = new InvoiceBll();
+            CreateInvoiceResponse Resp = InvoiceB.CreateInvoiceModel(_db, ReqModel);
+            if(Resp.InvoiceId != null)
+            {
+                return new GenericResponse<CreateInvoiceResponse>
+                {
+                    statusCode = 200,
+                    data = Resp,
+                    message = "",
+                };
+            } else
+            {
+                return new GenericResponse<CreateInvoiceResponse>
+                {
+                    statusCode = 500,
+                    data = null,
+                    message = Resp.Message,
+                };
+            }
         }
 
         // PUT api/<InvoiceController>/5
