@@ -33,6 +33,8 @@ namespace Ecomerce.Bll
                     ModelT.Price = ListProd.Single(x => x.ProductId == ProductReq.ProductId).Price;
 
                     TotalInvoice += ModelT.Price * ModelT.Count;
+
+                    ListProdSend.Add(ModelT);
                 }
 
                 InvoiceHeadRepository InvoiceHR = new InvoiceHeadRepository();

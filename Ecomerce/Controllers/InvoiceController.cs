@@ -12,6 +12,7 @@ namespace Ecomerce.Controllers
     [ApiController]
     public class InvoiceController : ControllerBase
     {
+        InvoiceBll InvoiceB = new InvoiceBll();
 
         private readonly DbproductContext _db;
 
@@ -38,7 +39,6 @@ namespace Ecomerce.Controllers
         [HttpPost]
         public GenericResponse<CreateInvoiceResponse> Post([FromBody] List<CreateInvoiceRequest> ReqModel)
         {
-            InvoiceBll InvoiceB = new InvoiceBll();
             CreateInvoiceResponse Resp = InvoiceB.CreateInvoiceModel(_db, ReqModel);
             if(Resp.InvoiceId != null)
             {
