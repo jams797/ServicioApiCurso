@@ -25,15 +25,13 @@ namespace Ecomerce.Bll
                 double TotalInvoice = 0;
 
                 List<CreateInvoiceModel> ListProdSend = new List<CreateInvoiceModel>();
-                foreach (CreateInvoiceRequest ProductReq in ListReq) {
-                    CreateInvoiceModel ModelT = new CreateInvoiceModel();
-                    ModelT.ProductId = ProductReq.ProductId;
-                    ModelT.Count = ProductReq.Count;
-                    ModelT.Price = ListProd.Single(x => x.ProductId == ProductReq.ProductId).Price;
 
-                    TotalInvoice += ModelT.Price * ModelT.Count;
+                List<Product> ListProdUpdateCount = ListProd;
 
-                    ListProdSend.Add(ModelT);
+                CreateInvoiceResponse? ProcForeachProduct = ValidateInvoiceStockProduct(Context, ListReq, ref ListProdUpdateCount, ref ListProdSend, ref TotalInvoice);
+                if (ProcForeachProduct != null)
+                {
+                    return ProcForeachProduct;
                 }
 
                 InvoiceHeadRepository InvoiceHR = new InvoiceHeadRepository();
@@ -41,6 +39,8 @@ namespace Ecomerce.Bll
 
                 InvoiceDetailRepository InvoiceDR = new InvoiceDetailRepository();
                 InvoiceDR.CreateInvoiceDetail(Context, ListProdSend, InvoiceHeadId);
+
+                ProductRep.UpdateProductsCount(Context, ListProd, ListProdUpdateCount);
 
                 Context.Database.CommitTransaction();
 
@@ -50,7 +50,7 @@ namespace Ecomerce.Bll
                     Message = "",
                 };
 
-            } catch {
+            } catch (Exception ex) {
                 Context.Database.RollbackTransaction();
                 return new CreateInvoiceResponse
                 {
@@ -71,6 +71,38 @@ namespace Ecomerce.Bll
                     Message = MessageHelper.ErrorCreateInvoiceProductNotFound,
                 };
             }
+            return null;
+        }
+
+        public CreateInvoiceResponse? ValidateInvoiceStockProduct(DbproductContext Context, List<CreateInvoiceRequest> ListReq, ref List<Product> ListProd, ref List<CreateInvoiceModel> ListProdSend, ref double TotalInvoice)
+        {
+            List<Product> ListProdModif = new List<Product>();
+            foreach (CreateInvoiceRequest ProductReq in ListReq)
+            {
+                Product ProductFindDB = ListProd.Single(x => x.ProductId == ProductReq.ProductId);
+
+                if(ProductFindDB.Count < ProductReq.Count)
+                {
+                    return new CreateInvoiceResponse
+                    {
+                        InvoiceId = null,
+                        Message = MessageHelper.ErrorCreateInvoiceProductExecendStock,
+                    };
+                }
+
+                CreateInvoiceModel ModelT = new CreateInvoiceModel();
+                ModelT.ProductId = ProductReq.ProductId;
+                ModelT.Count = ProductReq.Count;
+                ModelT.Price = ProductFindDB.Price;
+
+                TotalInvoice += ModelT.Price * ModelT.Count;
+
+                ListProdSend.Add(ModelT);
+
+                ProductFindDB.Count = ProductFindDB.Count - ModelT.Count;
+                ListProdModif.Add(ProductFindDB);
+            }
+            ListProd = ListProdModif;
             return null;
         }
     }
