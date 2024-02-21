@@ -7,20 +7,19 @@ namespace Ecomerce.Bll
 {
     public class InvoiceBll
     {
+
+        ProductRepository ProductRep = new ProductRepository();
+
         public CreateInvoiceResponse CreateInvoiceModel(DbproductContext Context, List<CreateInvoiceRequest> ListReq)
         {
             Context.Database.BeginTransaction();
             try
             {
-                ProductRepository ProductRep = new ProductRepository();
-                List<Product> ListProd = ProductRep.GetProductsById(Context, ListReq.Select(x => x.ProductId).ToList());
-                if (ListProd.Count != ListReq.Count)
+                List<Product> ListProd = new List<Product>();
+                CreateInvoiceResponse? ValidateProd = ValidateIdProducstDB(Context, ListReq, ref ListProd);
+                if (ValidateProd != null)
                 {
-                    return new CreateInvoiceResponse
-                    {
-                        InvoiceId = null,
-                        Message = MessageHelper.ErrorCreateInvoiceProductNotFound,
-                    };
+                    return ValidateProd;
                 }
 
                 double TotalInvoice = 0;
@@ -59,6 +58,20 @@ namespace Ecomerce.Bll
                     Message = MessageHelper.ErrorCreateInvoice,
                 };
             }
+        }
+
+        public CreateInvoiceResponse? ValidateIdProducstDB(DbproductContext Context, List<CreateInvoiceRequest> ListReq, ref List<Product> ListProd)
+        {
+            ListProd = ProductRep.GetProductsById(Context, ListReq.Select(x => x.ProductId).ToList());
+            if (ListProd.Count != ListReq.Count)
+            {
+                return new CreateInvoiceResponse
+                {
+                    InvoiceId = null,
+                    Message = MessageHelper.ErrorCreateInvoiceProductNotFound,
+                };
+            }
+            return null;
         }
     }
 }
