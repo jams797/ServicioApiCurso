@@ -28,11 +28,21 @@ namespace Ecomerce.Bll
 
                 List<Product> ListProdUpdateCount = ListProd;
 
-                CreateInvoiceResponse? ProcForeachProduct = ValidateInvoiceStockProduct(Context, ListReq, ref ListProdUpdateCount, ref ListProdSend, ref TotalInvoice);
+                CreateInvoiceValidateStockFunctionModel ModelValStock = new CreateInvoiceValidateStockFunctionModel
+                {
+                    ListReq = ListReq,
+                    ListProd = ListProdUpdateCount,
+                    ListProdSend = ListProdSend,
+                    TotalInvoice = TotalInvoice,
+                };
+                CreateInvoiceResponse? ProcForeachProduct = ValidateInvoiceStockProduct(Context, ref ModelValStock);
                 if (ProcForeachProduct != null)
                 {
                     return ProcForeachProduct;
                 }
+                ListProdUpdateCount = ModelValStock.ListProd;
+                ListProdSend = ModelValStock.ListProdSend;
+                TotalInvoice = ModelValStock.TotalInvoice;
 
                 InvoiceHeadRepository InvoiceHR = new InvoiceHeadRepository();
                 int InvoiceHeadId = InvoiceHR.CreateHeadInvoice(Context, TotalInvoice);
@@ -74,12 +84,12 @@ namespace Ecomerce.Bll
             return null;
         }
 
-        public CreateInvoiceResponse? ValidateInvoiceStockProduct(DbproductContext Context, List<CreateInvoiceRequest> ListReq, ref List<Product> ListProd, ref List<CreateInvoiceModel> ListProdSend, ref double TotalInvoice)
+        public CreateInvoiceResponse? ValidateInvoiceStockProduct(DbproductContext Context, ref CreateInvoiceValidateStockFunctionModel ModelValStock)
         {
             List<Product> ListProdModif = new List<Product>();
-            foreach (CreateInvoiceRequest ProductReq in ListReq)
+            foreach (CreateInvoiceRequest ProductReq in ModelValStock.ListReq)
             {
-                Product ProductFindDB = ListProd.Single(x => x.ProductId == ProductReq.ProductId);
+                Product ProductFindDB = ModelValStock.ListProd.Single(x => x.ProductId == ProductReq.ProductId);
 
                 if(ProductFindDB.Count < ProductReq.Count)
                 {
@@ -95,14 +105,14 @@ namespace Ecomerce.Bll
                 ModelT.Count = ProductReq.Count;
                 ModelT.Price = ProductFindDB.Price;
 
-                TotalInvoice += ModelT.Price * ModelT.Count;
+                ModelValStock.TotalInvoice += ModelT.Price * ModelT.Count;
 
-                ListProdSend.Add(ModelT);
+                ModelValStock.ListProdSend.Add(ModelT);
 
                 ProductFindDB.Count = ProductFindDB.Count - ModelT.Count;
                 ListProdModif.Add(ProductFindDB);
             }
-            ListProd = ListProdModif;
+            ModelValStock.ListProd = ListProdModif;
             return null;
         }
     }
