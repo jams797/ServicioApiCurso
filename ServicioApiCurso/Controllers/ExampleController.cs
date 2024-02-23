@@ -35,6 +35,9 @@ namespace ServicioApiCurso.Controllers
 
             //return await _db.Categories.ToListAsync();
 
+            // _db.Products.ToList().Take(10);  // NO se debe hacer
+            // _db.Products.Take(10).ToList(); // Recomendable
+
             var tmp = (from catg in _db.Categories
              join prod in _db.Products on catg.CategoryId equals prod.CategoryId
              select new

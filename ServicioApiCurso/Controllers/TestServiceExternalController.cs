@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServicioApiCurso.Models;
+using ServicioApiCurso.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,7 +16,7 @@ namespace ServicioApiCurso.Controllers
         {
             try
             {
-                HttpClient HttpC = new HttpClient();
+                /*HttpClient HttpC = new HttpClient();
                 HttpC.DefaultRequestHeaders.Add("Accept", "application/json");
                 HttpC.Timeout = TimeSpan.FromSeconds(10);
                 //HttpC.BaseAddress = new Uri("https://jsonplaceholder.typicode.com/posts");
@@ -33,7 +34,12 @@ namespace ServicioApiCurso.Controllers
 
                 var jsonBody = PostModelReqService.FromJson(body);
 
-                return jsonBody;
+                return jsonBody;*/
+
+                return await (new PostExternalService()).GetPost();
+
+                //return await (new CollectionExternalService()).GetCollection();
+
             } catch (TaskCanceledException ex)
             {
                 return "Tiempo excedido";
@@ -52,8 +58,9 @@ namespace ServicioApiCurso.Controllers
 
         // POST api/<TestServiceExternalController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<dynamic> Post([FromBody] PublishPostModelReqService ModelReq)
         {
+            return await (new PostExternalService()).PublishPost(ModelReq);
         }
 
         // PUT api/<TestServiceExternalController>/5

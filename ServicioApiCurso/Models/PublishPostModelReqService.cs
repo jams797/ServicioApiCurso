@@ -4,7 +4,7 @@
 //
 //    using ServicioApiCurso.Models;
 //
-//    var postModelReqService = PostModelReqService.FromJson(jsonString);
+//    var publishPostModelReqService = PublishPostModelReqService.FromJson(jsonString);
 
 namespace ServicioApiCurso.Models
 {
@@ -15,32 +15,29 @@ namespace ServicioApiCurso.Models
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class PostModelReqService
+    public partial class PublishPostModelReqService
     {
-        [JsonProperty("userId")]
-        public int UserId { get; set; }
-
-        [JsonProperty("id")]
-        public int IdPost { get; set; }
-
         [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("body")]
         public string Body { get; set; }
+
+        [JsonProperty("userId")]
+        public long UserId { get; set; }
     }
 
-    public partial class PostModelReqService
+    public partial class PublishPostModelReqService
     {
-        public static List<PostModelReqService> FromJson(string json) => JsonConvert.DeserializeObject<List<PostModelReqService>>(json, ServicioApiCurso.Models.PostModelReqServiceConverter.Settings);
+        public static PublishPostModelReqService FromJson(string json) => JsonConvert.DeserializeObject<PublishPostModelReqService>(json, ServicioApiCurso.Models.PublishPostModelReqServiceConverter.Settings);
     }
 
-    public static class PostModelReqServiceSerialize
+    public static class PublishPostModelReqServiceSerialize
     {
-        public static string ToJson(this List<PostModelReqService> self) => JsonConvert.SerializeObject(self, ServicioApiCurso.Models.PostModelReqServiceConverter.Settings);
+        public static string ToJson(this PublishPostModelReqService self) => JsonConvert.SerializeObject(self, ServicioApiCurso.Models.PublishPostModelReqServiceConverter.Settings);
     }
 
-    internal static class PostModelReqServiceConverter
+    internal static class PublishPostModelReqServiceConverter
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
