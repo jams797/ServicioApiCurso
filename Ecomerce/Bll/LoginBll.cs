@@ -1,7 +1,9 @@
 ﻿using Ecomerce.DBModels;
-using Ecomerce.Models;
+using Ecomerce.Helpers;
+using Ecomerce.Models.LoginProcess;
 using Ecomerce.Repository;
 using MigracionModelDB.DBModels;
+using ServicioApiCurso.Helpers;
 using ServicioApiCurso.Models.General;
 
 namespace Ecomerce.Bll
@@ -16,35 +18,59 @@ namespace Ecomerce.Bll
             ContextDB = _Context;
         }
 
-        public GenericResponse<TUser> GetLoginUSer(LoginRequestModel ReqModel)
+        public GenericResponse<LoginResponseModel> GetLoginUSer(LoginRequestModel ReqModel)
         {
             try
             {
-                TUser TU = new TUser();
 
 
                 var UserRep = new UserRepository();
 
-                string MessageError = UserRep.LoginUser(ContextDB, ReqModel, ref TU);
+                TUser TU = UserRep.LoginUser(ContextDB, ReqModel);
 
-                if(MessageError == null)
+                if(TU != null)
                 {
-                    return new GenericResponse<TUser>
+                    string passFindDecrypt = (new MethodsEncryptHelper()).DencryptPassword(TU.Password);
+                    if (passFindDecrypt == ReqModel.password)
                     {
-                        statusCode = 200,
-                        data = TU,
-                    };
+                        if (TU.Status == "A")
+                        {
+                            return new GenericResponse<LoginResponseModel>
+                            {
+                                statusCode = 200,
+                                data = new LoginResponseModel {
+                                    UserName = TU.UserName,
+                                    Token = (new MethodsHelper()).CreateTokenSesion(TU.UserId),
+                                },
+                            };
+                        } else
+                        {
+                            return new GenericResponse<LoginResponseModel>
+                            {
+                                statusCode = 500,
+                                message = MessageHelper.LoginErrorNotActived,
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new GenericResponse<LoginResponseModel>
+                        {
+                            statusCode = 500,
+                            message = MessageHelper.LoginErrorPassword,
+                        };
+                    }
                 } else
                 {
-                    return new GenericResponse<TUser>
+                    return new GenericResponse<LoginResponseModel>
                     {
                         statusCode = 500,
-                        message = MessageError,
+                        message = MessageHelper.LoginErrorUserName,
                     };
                 }
 
             } catch (Exception ex) {
-                return new GenericResponse<TUser>
+                return new GenericResponse<LoginResponseModel>
                 {
                     statusCode = 500,
                     message = "Error.",

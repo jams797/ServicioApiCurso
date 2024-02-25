@@ -1,8 +1,10 @@
 ﻿using Ecomerce.Bll;
 using Ecomerce.DBModels;
 using Ecomerce.Filters;
+using Ecomerce.Helpers;
 using Ecomerce.Models.InvoiceProcess;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using ServicioApiCurso.Models.General;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -43,7 +45,8 @@ namespace Ecomerce.Controllers
         [HttpPost]
         public GenericResponse<CreateInvoiceResponse> Post([FromBody] List<CreateInvoiceRequest> ReqModel)
         {
-            CreateInvoiceResponse Resp = InvoiceB.CreateInvoiceModel(_db, ReqModel);
+            var ModelSesion = (new MethodsHelper()).GetModelSesionByToken(HttpContext.Request.Headers["Authorization"].ToString());
+            CreateInvoiceResponse Resp = InvoiceB.CreateInvoiceModel(_db, ReqModel, ModelSesion.UserId);
             if(Resp.InvoiceId != null)
             {
                 return new GenericResponse<CreateInvoiceResponse>

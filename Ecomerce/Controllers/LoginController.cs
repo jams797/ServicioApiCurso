@@ -1,6 +1,6 @@
 ﻿using Ecomerce.Bll;
 using Ecomerce.DBModels;
-using Ecomerce.Models;
+using Ecomerce.Models.LoginProcess;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

@@ -10,7 +10,7 @@ namespace Ecomerce.Bll
 
         ProductRepository ProductRep = new ProductRepository();
 
-        public CreateInvoiceResponse CreateInvoiceModel(DbproductContext Context, List<CreateInvoiceRequest> ListReq)
+        public CreateInvoiceResponse CreateInvoiceModel(DbproductContext Context, List<CreateInvoiceRequest> ListReq, int UserId)
         {
             Context.Database.BeginTransaction();
             try
@@ -45,7 +45,7 @@ namespace Ecomerce.Bll
                 TotalInvoice = ModelValStock.TotalInvoice;
 
                 InvoiceHeadRepository InvoiceHR = new InvoiceHeadRepository();
-                int InvoiceHeadId = InvoiceHR.CreateHeadInvoice(Context, TotalInvoice);
+                int InvoiceHeadId = InvoiceHR.CreateHeadInvoice(Context, TotalInvoice, UserId);
 
                 InvoiceDetailRepository InvoiceDR = new InvoiceDetailRepository();
                 InvoiceDR.CreateInvoiceDetail(Context, ListProdSend, InvoiceHeadId);

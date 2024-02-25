@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Ecomerce.Helpers;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
+using ServicioApiCurso.Helpers;
+using ServicioApiCurso.Models.General;
 
 namespace Ecomerce.Filters
 {
@@ -9,9 +13,31 @@ namespace Ecomerce.Filters
             ActionExecutionDelegate next
         )
         {
-            Console.WriteLine("Hola");
-            await next();
-            Console.WriteLine("Adios");
+            MethodsHelper MethodsHep = new MethodsHelper();
+            var AuthorizationH = context.HttpContext.Request.Headers["Authorization"].ToString();
+            if (AuthorizationH != null)
+            {
+                var MessageError = MethodsHep.ValidateTokenSesion(AuthorizationH);
+                if (MessageError == null)
+                {
+                    await next();
+                } else
+                {
+                    context.HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(new GenericResponse<dynamic>
+                    {
+                        statusCode = 401,
+                        message = MessageError,
+                    }));
+                }
+            } else
+            {
+                context.HttpContext.Response.WriteAsync(JsonConvert.SerializeObject(new GenericResponse<dynamic>
+                {
+                    statusCode = 401,
+                    message = MessageHelper.TokenSesionErrorNotParams,
+                }));
+            }
+            
         }
     }
 }
