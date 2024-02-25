@@ -1,8 +1,7 @@
-﻿using MigracionModelDB.DBModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Ecomerce.DBModels;
+namespace MigracionModelDB.DBModels;
 
 public partial class InvoiceHead
 {

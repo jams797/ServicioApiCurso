@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryMethod", "LibraryMet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecomerce", "Ecomerce\Ecomerce.csproj", "{AE7F58B2-6695-4891-93BE-2ED53BDC6856}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigracionModelDB", "MigracionModelDB\MigracionModelDB.csproj", "{9BAE5425-FC47-4082-837A-947F575A72D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AE7F58B2-6695-4891-93BE-2ED53BDC6856}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE7F58B2-6695-4891-93BE-2ED53BDC6856}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE7F58B2-6695-4891-93BE-2ED53BDC6856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BAE5425-FC47-4082-837A-947F575A72D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BAE5425-FC47-4082-837A-947F575A72D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BAE5425-FC47-4082-837A-947F575A72D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BAE5425-FC47-4082-837A-947F575A72D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿using Ecomerce.Bll;
 using Ecomerce.DBModels;
+using Ecomerce.Filters;
 using Ecomerce.Models.InvoiceProcess;
 using Microsoft.AspNetCore.Mvc;
 using ServicioApiCurso.Models.General;
@@ -10,6 +11,7 @@ namespace Ecomerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SessionUsuarioFilter))]
     public class InvoiceController : ControllerBase
     {
         InvoiceBll InvoiceB = new InvoiceBll();
@@ -25,6 +27,7 @@ namespace Ecomerce.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            Console.WriteLine("Ruta");
             return new string[] { "value1", "value2" };
         }
 
@@ -32,6 +35,7 @@ namespace Ecomerce.Controllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
+            Console.WriteLine("Ruta 2");
             return "value";
         }
 

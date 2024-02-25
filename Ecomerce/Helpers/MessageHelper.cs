@@ -5,5 +5,8 @@
         public static string ErrorCreateInvoice = "Error, no se puedo facturar el pedido";
         public static string ErrorCreateInvoiceProductNotFound = "Error, producto no existe o no fue encontrado";
         public static string ErrorCreateInvoiceProductExecendStock = "Error, uno o mas productos excede el stock existente";
+
+        public static string LoginErrorUserName = "Usuario incorrecto";
+        public static string LoginErrorPassword = "Contraseña incorrecta";
     }
 }
