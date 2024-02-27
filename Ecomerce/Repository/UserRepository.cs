@@ -8,11 +8,19 @@ namespace Ecomerce.Repository
 {
     public class UserRepository
     {
-        public TUser? LoginUser(DbproductContext contextDB, LoginRequestModel ModelReq)
+        public TUser? FindUserByUserName(DbproductContext contextDB, LoginRequestModel ModelReq)
         {
             var UserFind = contextDB.TUsers.SingleOrDefault(x => x.UserName == ModelReq.userName);
 
             return UserFind;
+        }
+
+        public TUser? RegisterUser(DbproductContext contextDB, TUser TU) {
+            contextDB.TUsers.Add(TU);
+
+            contextDB.SaveChanges();
+
+            return TU;
         }
     }
 }

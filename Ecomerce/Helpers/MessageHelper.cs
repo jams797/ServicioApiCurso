@@ -13,5 +13,10 @@
         public static string TokenSesionErrorNotParams = "No se encontro un token sesión";
         public static string TokenSesionErrorValidate = "La sesión no es válida";
         public static string TokenSesionErrorExpired = "La sesión ha caducado";
+
+        public static string RegisterUserErrorParamUserName = "Error, el usuario debe tener entre 4 y 16 caracteres";
+        public static string RegisterUserErrorParamPassword = "Error, la contraseña debe tener entre 8 y 16 caracteres";
+        public static string RegisterUserErrorExisteUser = "Error, el usuario ya existe en el sistema";
+        public static string RegisterUserErrorEx = "Ocurrio un error al ingresar el usuario";
     }
 }

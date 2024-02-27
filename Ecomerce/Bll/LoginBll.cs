@@ -26,7 +26,7 @@ namespace Ecomerce.Bll
 
                 var UserRep = new UserRepository();
 
-                TUser TU = UserRep.LoginUser(ContextDB, ReqModel);
+                TUser TU = UserRep.FindUserByUserName(ContextDB, ReqModel);
 
                 if(TU != null)
                 {
