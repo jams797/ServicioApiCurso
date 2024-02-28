@@ -62,6 +62,7 @@ namespace Ecomerce.Bll
                 };
             } catch (Exception ex)
             {
+                ContextDB.Database.RollbackTransaction();
                 return new GenericResponse<bool>
                 {
                     statusCode = 500,
