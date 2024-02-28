@@ -1,4 +1,5 @@
 ﻿using Ecomerce.DBModels;
+using Ecomerce.Models.InvoiceProcess;
 using System.Linq;
 
 namespace Ecomerce.Repository
@@ -10,7 +11,7 @@ namespace Ecomerce.Repository
             return Context.Products.Where(x => Ids.Contains(x.ProductId)).ToList();
         }
 
-        public void UpdateProductsCount(DbproductContext Context, List<Product> ListProd, List<Product> ListProdUpdate)
+        public void UpdateProductsCount(DbproductContext Context, List<Product> ListProd, List<CreateInvoiceModel> ListProdUpdate)
         {
             foreach (Product Prd in ListProd)
             {

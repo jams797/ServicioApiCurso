@@ -9,5 +9,6 @@ namespace Ecomerce.Models.InvoiceProcess
         public List<Product> ListProd { get; set; }
         public List<CreateInvoiceModel> ListProdSend { get; set; }
         public double TotalInvoice { get; set; }
+        public List<CreateInvoiceModel> ListProdUpdate { get; set; }
     }
 }

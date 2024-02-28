@@ -22,5 +22,21 @@ namespace Ecomerce.Repository
 
             return TU;
         }
+
+        public TUser GetUserById(DbproductContext contextDB, int userId)
+        {
+            TUser TU = contextDB.TUsers.SingleOrDefault(x => x.UserId == userId);
+
+            return TU;
+        }
+
+        public void ChangePassword(DbproductContext contextDB, int userId, string password)
+        {
+            TUser TU = contextDB.TUsers.Single(x => x.UserId == userId);
+
+            TU.Password = password;
+
+            contextDB.SaveChanges();
+        }
     }
 }
