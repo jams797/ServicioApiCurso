@@ -22,5 +22,9 @@
         public static string ChangePasswordErrorId = "Ocurrio un error al buscar el usuario";
         public static string ChangePasswordErrorPassword = "La contraseña anterior no coincide";
         public static string ChangePasswordErrorEx = "Ocurrio un error al realizar el cambio de contraseña";
+
+        public static string GetInvoiceErrorHead = "Ocurrio un error al consultar las facturas";
+        public static string GetInvoiceErrorDetail = "Ocurrio un error al consultar el detalle de la factura";
+        public static string GetInvoiceErrorDetailNotUser = "No tienes acceso a ver el detalle de esta factura u ocurrio un error";
     }
 }

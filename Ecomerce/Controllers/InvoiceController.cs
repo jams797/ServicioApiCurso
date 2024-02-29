@@ -16,29 +16,31 @@ namespace Ecomerce.Controllers
     [ServiceFilter(typeof(SessionUsuarioFilter))]
     public class InvoiceController : ControllerBase
     {
-        InvoiceBll InvoiceB = new InvoiceBll();
+        private InvoiceBll InvoiceB;
 
         private readonly DbproductContext _db;
 
         public InvoiceController(DbproductContext dbProductContext)
         {
             _db = dbProductContext;
+            InvoiceB = new InvoiceBll(dbProductContext);
         }
 
         // GET: api/<InvoiceController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public GenericResponse<List<InvoiceHead>> Get()
         {
-            Console.WriteLine("Ruta");
-            return new string[] { "value1", "value2" };
+            var ModelSesion = (new MethodsHelper()).GetModelSesionByToken(HttpContext.Request.Headers["Authorization"].ToString());
+            return InvoiceB.GetAllInvoiceByUserId(ModelSesion.UserId);
+
         }
 
         // GET api/<InvoiceController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public GenericResponse<List<InvoiceDetailResponse>> Get(int id)
         {
-            Console.WriteLine("Ruta 2");
-            return "value";
+            var ModelSesion = (new MethodsHelper()).GetModelSesionByToken(HttpContext.Request.Headers["Authorization"].ToString());
+            return InvoiceB.GetInvoiceDetailByHeadId(id, ModelSesion.UserId);
         }
 
         // POST api/<InvoiceController>
@@ -46,7 +48,7 @@ namespace Ecomerce.Controllers
         public GenericResponse<CreateInvoiceResponse> Post([FromBody] List<CreateInvoiceRequest> ReqModel)
         {
             var ModelSesion = (new MethodsHelper()).GetModelSesionByToken(HttpContext.Request.Headers["Authorization"].ToString());
-            CreateInvoiceResponse Resp = InvoiceB.CreateInvoiceModel(_db, ReqModel, ModelSesion.UserId);
+            CreateInvoiceResponse Resp = InvoiceB.CreateInvoiceModel(ReqModel, ModelSesion.UserId);
             if(Resp.InvoiceId != null)
             {
                 return new GenericResponse<CreateInvoiceResponse>

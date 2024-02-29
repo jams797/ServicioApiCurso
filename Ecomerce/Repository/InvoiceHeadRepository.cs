@@ -17,5 +17,15 @@ namespace Ecomerce.Repository
 
             return InvoiceH.InvoiceHeadId;
         }
+
+        public List<InvoiceHead> GetAllInvoiceByUserId(DbproductContext Context, int userId)
+        {
+            return Context.InvoiceHeads.Where(x => x.UserId == userId).ToList();
+        }
+
+        public InvoiceHead? GetInvoiceByUserIdAndHeadId(DbproductContext Context, int HeadId, int userId)
+        {
+            return Context.InvoiceHeads.SingleOrDefault(x => x.UserId == userId && x.InvoiceHeadId == HeadId);
+        }
     }
 }

@@ -23,5 +23,10 @@ namespace Ecomerce.Repository
 
             Context.SaveChanges();
         }
+
+        public List<InvoiceDetail> GetInvoiceDetailByHeadId(DbproductContext Context, int HeadId)
+        {
+            return Context.InvoiceDetails.Where(x => x.InvoiceHeadId == HeadId).ToList();
+        }
     }
 }

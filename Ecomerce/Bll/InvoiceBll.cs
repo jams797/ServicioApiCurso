@@ -2,6 +2,7 @@
 using Ecomerce.Models.InvoiceProcess;
 using Ecomerce.Repository;
 using ServicioApiCurso.Helpers;
+using ServicioApiCurso.Models.General;
 
 namespace Ecomerce.Bll
 {
@@ -10,13 +11,20 @@ namespace Ecomerce.Bll
 
         ProductRepository ProductRep = new ProductRepository();
 
-        public CreateInvoiceResponse CreateInvoiceModel(DbproductContext Context, List<CreateInvoiceRequest> ListReq, int UserId)
+        DbproductContext ContextDB;
+
+        public InvoiceBll(DbproductContext _Context)
         {
-            Context.Database.BeginTransaction();
+            ContextDB = _Context;
+        }
+
+        public CreateInvoiceResponse CreateInvoiceModel(List<CreateInvoiceRequest> ListReq, int UserId)
+        {
+            ContextDB.Database.BeginTransaction();
             try
             {
                 List<Product> ListProd = new List<Product>();
-                CreateInvoiceResponse? ValidateProd = ValidateIdProducstDB(Context, ListReq, ref ListProd);
+                CreateInvoiceResponse? ValidateProd = ValidateIdProducstDB(ContextDB, ListReq, ref ListProd);
                 if (ValidateProd != null)
                 {
                     return ValidateProd;
@@ -37,7 +45,7 @@ namespace Ecomerce.Bll
                     TotalInvoice = TotalInvoice,
                     ListProdUpdate = ListProdUpdate,
                 };
-                CreateInvoiceResponse? ProcForeachProduct = ValidateInvoiceStockProduct(Context, ref ModelValStock);
+                CreateInvoiceResponse? ProcForeachProduct = ValidateInvoiceStockProduct(ContextDB, ref ModelValStock);
                 if (ProcForeachProduct != null)
                 {
                     return ProcForeachProduct;
@@ -47,14 +55,14 @@ namespace Ecomerce.Bll
                 TotalInvoice = ModelValStock.TotalInvoice;
 
                 InvoiceHeadRepository InvoiceHR = new InvoiceHeadRepository();
-                int InvoiceHeadId = InvoiceHR.CreateHeadInvoice(Context, TotalInvoice, UserId);
+                int InvoiceHeadId = InvoiceHR.CreateHeadInvoice(ContextDB, TotalInvoice, UserId);
 
                 InvoiceDetailRepository InvoiceDR = new InvoiceDetailRepository();
-                InvoiceDR.CreateInvoiceDetail(Context, ListProdSend, InvoiceHeadId);
+                InvoiceDR.CreateInvoiceDetail(ContextDB, ListProdSend, InvoiceHeadId);
 
-                ProductRep.UpdateProductsCount(Context, ListProd, ListProdUpdate);
+                ProductRep.UpdateProductsCount(ContextDB, ListProd, ListProdUpdate);
 
-                Context.Database.CommitTransaction();
+                ContextDB.Database.CommitTransaction();
 
                 return new CreateInvoiceResponse
                 {
@@ -63,11 +71,80 @@ namespace Ecomerce.Bll
                 };
 
             } catch (Exception ex) {
-                Context.Database.RollbackTransaction();
+                ContextDB.Database.RollbackTransaction();
                 return new CreateInvoiceResponse
                 {
                     InvoiceId = null,
                     Message = MessageHelper.ErrorCreateInvoice,
+                };
+            }
+        }
+
+        public GenericResponse<List<InvoiceHead>> GetAllInvoiceByUserId(int UserId)
+        {
+            try
+            {
+                InvoiceHeadRepository InvoiceHRep = new InvoiceHeadRepository();
+                List<InvoiceHead> ListInvoices = InvoiceHRep.GetAllInvoiceByUserId(ContextDB, UserId);
+                return new GenericResponse<List<InvoiceHead>>
+                {
+                    statusCode = 200,
+                    data = ListInvoices,
+                    message = "",
+                };
+            } catch (Exception ex)
+            {
+                return new GenericResponse<List<InvoiceHead>>
+                {
+                    statusCode = 500,
+                    data = null,
+                    message = MessageHelper.GetInvoiceErrorHead,
+                };
+            }
+        }
+
+        public GenericResponse<List<InvoiceDetailResponse>> GetInvoiceDetailByHeadId(int InvoiceHeadId, int UserId)
+        {
+            try
+            {
+                InvoiceHeadRepository InvoiceHRep = new InvoiceHeadRepository();
+                InvoiceHead InvoiceFind = InvoiceHRep.GetInvoiceByUserIdAndHeadId(ContextDB, InvoiceHeadId, UserId);
+                if (InvoiceFind == null)
+                {
+                    return new GenericResponse<List<InvoiceDetailResponse>>
+                    {
+                        statusCode = 500,
+                        data = null,
+                        message = MessageHelper.GetInvoiceErrorDetailNotUser,
+                    };
+                }
+                InvoiceDetailRepository InvoiceDRep = new InvoiceDetailRepository();
+                List<InvoiceDetail> ListDetails = InvoiceDRep.GetInvoiceDetailByHeadId(ContextDB, InvoiceHeadId);
+
+                List<InvoiceDetailResponse> ListReturn = [];
+                foreach(var Item in ListDetails)
+                {
+                    ListReturn.Add(new InvoiceDetailResponse
+                    {
+                        DetailId = Item.InvoiceHeadId,
+                        Price = Item.Price,
+                        ProductId = Item.ProductId,
+                    });
+                }
+                return new GenericResponse<List<InvoiceDetailResponse>>
+                {
+                    statusCode = 200,
+                    data = ListReturn,
+                    message = "",
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GenericResponse<List<InvoiceDetailResponse>>
+                {
+                    statusCode = 500,
+                    data = null,
+                    message = MessageHelper.GetInvoiceErrorDetail,
                 };
             }
         }
